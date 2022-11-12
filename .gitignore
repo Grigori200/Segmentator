@@ -1,0 +1,5 @@
+outputs/*
+tmp/*
+data/
+/.idea/
+/__pycache__/
