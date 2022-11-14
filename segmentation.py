@@ -252,3 +252,19 @@ def full_segmentation(file_path: str, output_folder: str, length_limit: float, m
     delete_tmp_data(df)
     full_df = connect_records(full_df)
     return save_results(file_path, full_df, output_folder)
+
+
+def segmentation_without_diarization(file_path: str, output_folder: str, length_limit: float, min_gap: float) -> str:
+    df = segmentation(file_path, TMP_FOLDER, min_gap)
+    limited_df = limiting_length(df, length_limit, df.at[0, 'start'], df.at[len(df.index)-1, 'finish'])
+    delete_tmp_data(df)
+    full_df = connect_records(limited_df)
+    return save_results(file_path, full_df, output_folder)
+
+
+def sole_limitation(file_path: str, output_folder: str, length_limit: float, min_gap: float) -> str:
+    audio = AudioSegment.from_wav(file_path)
+    df = pd.DataFrame({'path': [file_path], 'start': [0.], 'finish': [audio.duration_seconds]})
+    limited_df = limiting_length(df, length_limit, 0., audio.duration_seconds)
+    full_df = connect_records(limited_df)
+    return save_results(file_path, full_df, output_folder)
